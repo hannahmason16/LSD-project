@@ -1,14 +1,18 @@
-globals [  ]
+globals [ slider-check-1
+  slider-check-2
+]
 
 breed [cow cows]
 breed [x a-x]
 turtles-own [
-  infected? ] ;; If true, the cow or vector is infected.
+  infected?  ;; If true, the cow or vector is infected.
+ prey ]
 patches-own [    ;; average temperature of patch, defined by slider.
     ] ;; average humidity of patch, defined by slider
 
 to setup
   clear-all
+  setup-globals
   ask patches [ set pcolor green ]
   create-cow 10
   [ set shape "cow"
@@ -30,13 +34,16 @@ to setup
   reset-ticks
 end
 
+to setup-globals
+  set slider-check-1 temperature
+  set slider-check-2 humidity
+end
 
 to go
   ask cow [ move ]
-  ask x [ reproduce ]
+  ask x [ check-sliders ]
+  ask x [ feed ]
 end
-
-
 
 to move
   rt random 50
@@ -44,9 +51,16 @@ to move
   fd 1
 end
 
-to reproduce
-   if temperature < 25 ask x [ death ]
+
+to feed
+  let closest min-one-of cow [ distance myself ]
+  if closest in-radius 4 [ move-to closest ]
+  if not any? cow-on neighbors4 [ fd 1 ]
 end
+
+to check-sliders
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -118,7 +132,7 @@ Temperature
 Temperature
 20
 40
-25.0
+30.0
 5
 1
 NIL
@@ -163,7 +177,7 @@ initial-vector
 initial-vector
 0
 100
-80.0
+65.0
 1
 1
 NIL
